@@ -1,0 +1,29 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{py,rst,ini,oml,gradle}]
+indent_style = space
+indent_size = 4
+
+[*.{html,css,scss,json,yml,yaml,svg,xml,ttl,js,nix,rule,typ,ts}]
+indent_style = space
+indent_size = 2
+max_line_length = 140
+
+[*.{log,md,LICENSE}]
+insert_final_newline = false
+trim_trailing_whitespace = false
+
+[*.rst]
+indent_size = 3
+
+[*.project]
+indent_style = space
+indent_size = 2

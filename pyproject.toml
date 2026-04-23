@@ -1,0 +1,84 @@
+[build-system]
+requires = ["setuptools", "wheel", "uv_build"]
+build-backend = "uv_build"
+
+[project]
+name = "robot-interface"
+version = "0.2.0"
+description = "Experiment package for Universal Robots remote control."
+authors = [
+    { name = "Bert Van Acker", email = "bert.vanacker@uantwerpen.be" },
+    { name = "Arkadiusz Michał Ryś", email = "Arkadiusz.Michal.Rys@gmail.com" },
+]
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "Natural Language :: English",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+license = { file = "LICENSE" }
+keywords = ["universal-robots", "ur", "remote-control", "ursim", "automation"]
+
+dependencies = [
+    "numpy   >= 1.19.0",
+    "arklog  >= 0.7.0",
+]
+
+[project.optional-dependencies]
+examples = [
+    "ur-rtde     >= 1.5.0",
+    "pymodbustcp >= 0.3.0",
+]
+[dependency-groups]
+dev = [
+    "ruff",
+    "pytest",
+    "invoke",
+    "vermin",
+    "restview",
+    { include-group = "doc" },
+]
+doc = [
+    "sphinx",
+    "sphinx-rtd-theme",
+    "sphinx-tabs",
+    "sphinx-toolbox",
+    "sphinxext-opengraph",
+    "sphinx-notfound-page",
+    "sphinxcontrib-drawio",
+    "sphinxcontrib-mermaid",
+    "readthedocs-sphinx-search",
+    "myst-parser",
+]
+
+#[project.urls]
+#source = "https://git.rys.app/phd/robosapiens/robot-interface"
+
+#[project.scripts]
+#ri = "robot_interface.main:main"
+
+[tool.uv]
+extra-index-url = [
+    "https://pip:rys-Rps1D5WhCGDzRDAXyz2b@git.rys.app/api/v4/groups/phd/-/packages/pypi/simple", # Expires 2026-08
+    "https://pip:glpat-aq2VpazxthkoqZ9b3bDz@git.rys.app/api/v4/groups/phd/-/packages/pypi/simple", # Expires 2025-08
+]
+
+[tool.ruff]
+line-length = 120
+extend-exclude = ["build", "dist", ".venv", "./tasks.py"]
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "B", "C4", "SIM", "TID", "ARG", "RUF"]
+ignore = ["E501"] # Ignore line length
+
+
+[tool.pytest.ini_options]
+markers = [
+    "long: marks tests as long-running (deselect with '-m \"not long\"')"
+]
+addopts = "-m 'not long'" # pytest -m "long or not long" to run all tests
+testpaths = ["tests"]

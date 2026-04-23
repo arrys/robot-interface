@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.venv/
+.codex_tmp/
+.pytest_cache/
+.ruff_cache/
+
+.idea
+robot-interface.toml
