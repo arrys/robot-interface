@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import math
 from typing import Sequence, Tuple
 
 from robot_interface.interface.capabilities import ArmCapabilities
@@ -19,6 +20,18 @@ class Orientation:
     rx: float #rad
     ry: float
     rz: float
+
+    @classmethod
+    def from_radians(cls, rx: float, ry: float, rz: float) -> "Orientation":
+        return cls(rx=float(rx), ry=float(ry), rz=float(rz))
+
+    @classmethod
+    def from_degrees(cls, rx: float, ry: float, rz: float) -> "Orientation":
+        return cls(
+            rx=math.radians(float(rx)),
+            ry=math.radians(float(ry)),
+            rz=math.radians(float(rz)),
+        )
 
 @dataclass
 class CartesianPose:

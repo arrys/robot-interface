@@ -8,7 +8,7 @@
 `ur-rtde` may build from source on newer Python versions. Install these first:
 
 - `cmake`
-- `ninja` (sometimes written as "ginja", package name is `ninja`)
+- `ninja`
 - Boost development package
 - `git`
 
