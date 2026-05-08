@@ -15,9 +15,13 @@ class RobotiqGripperURAdapter(GripperAdapter):
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._socket.settimeout(3)
         self._socket.connect((self.host, self.port))
+        self._socket.sendall('SET ACT 1'.encode('utf-8'))
+        self._socket.sendall('SET GTO 1'.encode('utf-8'))
+        self._socket.sendall('SET SPE 255'.encode('utf-8'))
+        self._socket.sendall('SET FOR 255'.encode('utf-8'))
 
     def disconnect(self) -> None:
-        self._socket.disconnect()
+        self._socket.close()
 
     def get_capabilities(self) -> GripperCapabilities:
         return GripperCapabilities(open=True, close=True, move=True, get_position=True, raw_command=False)

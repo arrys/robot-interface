@@ -267,7 +267,8 @@ class UR10URScriptArmAdapter(ArmAdapter):
         self._send_urscript(f"movej({list(joints_rad)}, a={acceleration}, v={speed})")
 
     def move_cartesian(self, pose: CartesianPose, *, speed: float, acceleration: float) -> None:
-        self._send_urscript(f"movel({_pose_to_list(pose)}, a={acceleration}, v={speed})")
+        self._send_urscript(f"movej(p{_pose_to_list(pose)}, a={acceleration}, v={speed})")
+        # self._send_urscript(f"movej({self.inverse_kinematics(position=[pose.position.x * 1000, pose.position.y * 1000, pose.position.z * 1000], orientation=[[pose.orientation.rx, pose.orientation.ry, pose.orientation.rz]])}, a={acceleration}, v={speed})")
 
     @property
     def joint_positions(self) -> list[float]:
