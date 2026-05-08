@@ -38,6 +38,7 @@ examples = [
 dev = [
     "ruff",
     "pytest",
+    "matplotlib",
     "invoke",
     "vermin",
     "restview",
