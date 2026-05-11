@@ -1,0 +1,100 @@
+image: docker:28
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+  DOCKER_HOST: tcp://docker:2376
+  # Where to publish this build's tagged working container.
+  DOCKER_SHA: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+  DOCKER_BRANCH: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  DOCKER_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_TAG
+  DOCKER_LATEST: $CI_REGISTRY_IMAGE:latest
+  UV_LINK_MODE: copy
+
+services:
+  - docker:28-dind # Needed when building docker images, like the build-docker job
+
+stages:
+  - test
+  - release
+
+before_script:
+  - docker info || echo "docker not available"
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY || echo "login skipped"
+
+test-package:
+  image: ghcr.io/astral-sh/uv:python3.13-alpine
+  stage: test
+  before_script:
+    - python -V
+    - uv --version
+    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi"
+  script:
+    - uv cache prune --ci
+    - uv venv .venv
+    - source .venv/bin/activate
+    - uv pip install -r pyproject.toml --all-extras
+    - uv pip install -e .
+    - uv run pytest tests
+  cache:
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - .uv-cache
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
+
+release-package:
+  image: ghcr.io/astral-sh/uv:python3.13-alpine
+  stage: release
+  before_script:
+    - python -V
+    - uv --version
+    - echo "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi"
+  script:
+    - uv cache prune --ci
+    - uv venv .venv
+    - source .venv/bin/activate
+    - uv pip install build twine flit
+    - uv build
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+  cache:
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - .uv-cache
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
+
+.release-package-pypi:
+  image: ghcr.io/astral-sh/uv:python3.13-alpine
+  stage: release
+  before_script:
+    - python -V
+    - uv --version
+  script:
+    - uv cache prune --ci
+    - uv venv .venv
+    - source .venv/bin/activate
+    - uv pip install build twine flit
+    - uv build
+    - python -m twine upload dist/*
+  cache:
+    - key:
+        files:
+          - uv.lock
+      paths:
+        - .uv-cache
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "push"
+      when: manual
+      allow_failure: true
