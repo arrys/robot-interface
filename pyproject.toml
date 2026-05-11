@@ -4,7 +4,7 @@ build-backend = "uv_build"
 
 [project]
 name = "robot-interface"
-version = "0.2.0"
+version = "0.0.0"
 description = "Experiment package for Universal Robots remote control."
 authors = [
     { name = "Bert Van Acker", email = "bert.vanacker@uantwerpen.be" },

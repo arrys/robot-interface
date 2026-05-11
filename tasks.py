@@ -56,7 +56,9 @@ def release(c, version):
     c.run(f"git checkout {dev_branch}") # Just to fail early in case the dev branch does not exist
     c.run(f"git checkout -b release-{_major}.{_minor}.{_patch} {dev_branch}")
     c.run(f"sed -i 's/\"{old_version}\"/\"{_major}.{_minor}.{_patch}\"/g' pyproject.toml")
-    c.run(f"sed -i 's/\"{old_version}\"/\"{_major}.{_minor}.{_patch}\"/g' docs/conf.py")
+    docs_conf = Path("docs/conf.py")
+    if docs_conf.exists():
+        c.run(f"sed -i 's/\"{old_version}\"/\"{_major}.{_minor}.{_patch}\"/g' {docs_conf}")
     print(f"Update the readme for version {_major}.{_minor}.{_patch}.")
     print(f"Run 'uv lock --upgrade'.")
     input("Press enter when ready.")
